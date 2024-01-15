@@ -12,6 +12,7 @@ import java.io.IOException;
 @Component
 public class ApiKeyFilter extends OncePerRequestFilter {
     static public final String API_SECRET_HEADER = "X-API-Key";
+    // No hardcoded value in real code ;)
     private final String apiKey = "A_STRING_API_KEY_HERE";
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
