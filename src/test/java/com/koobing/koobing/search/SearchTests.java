@@ -82,4 +82,23 @@ public class SearchTests {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().json(expectedJson));
     }
+
+    @Test
+    @DisplayName("Search hostel in Paris but no hostel is available")
+    void searchInParisButUnavailableHostel() throws Exception {
+        var expectedJson = """
+                {
+                  "search_criteria": {
+                    "zipcode": "75001",
+                    "arrival_date": "2024-01-01",
+                    "departure_date": "2024-01-02"
+                  }
+                }
+                """;
+
+        mvc.perform(get("/search?z=75001&d=2024-01-01"))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(content().json(expectedJson));
+    }
 }
