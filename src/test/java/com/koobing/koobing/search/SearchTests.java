@@ -1,20 +1,19 @@
 package com.koobing.koobing.search;
 
-import com.koobing.koobing.search.dto.SearchResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-
-import static org.mockito.BDDMockito.*;
-
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -31,6 +30,7 @@ public class SearchTests {
     private MockMvc mvc;
 
     @Test
+    @WithMockUser
     @DisplayName("Search hostel in Paris")
     void searchInParis() throws Exception {
         given(searchService.availableHostels(anyString(), any(LocalDate.class), any(LocalDate.class)))
@@ -72,6 +72,7 @@ public class SearchTests {
     }
 
     @Test
+    @WithMockUser
     @DisplayName("Search hostel in Paris without zipcode")
     void searchInParisWithoutZipcode() throws Exception {
         mvc.perform(get("/search?d=2024-01-01&d=2024-01-02"))
@@ -82,6 +83,7 @@ public class SearchTests {
 
 
     @Test
+    @WithMockUser
     @DisplayName("Search hostel in Paris without date")
     void searchInParisWithoutDate() throws Exception {
         mvc.perform(get("/search?z=75001"))
@@ -90,6 +92,7 @@ public class SearchTests {
     }
 
     @Test
+    @WithMockUser
     @DisplayName("Search hostel in Paris with one date missing")
     void searchInParisWithOneMissingDate() throws Exception {
         var expectedJson = """
@@ -105,6 +108,7 @@ public class SearchTests {
     }
 
     @Test
+    @WithMockUser
     @DisplayName("Search hostel in Paris but no hostel is available")
     void searchInParisButUnavailableHostel() throws Exception {
         given(searchService.availableHostels(anyString(), any(LocalDate.class), any(LocalDate.class)))
@@ -123,4 +127,23 @@ public class SearchTests {
                 .andExpect(status().isNotFound())
                 .andExpect(content().json(expectedJson));
     }
+
+    @Test
+    @WithAnonymousUser
+    @DisplayName("Search hostel in Paris without use has been authenticated")
+    void noAuthenticatedUser() throws Exception {
+        given(searchService.availableHostels(anyString(), any(LocalDate.class), any(LocalDate.class)))
+                .willReturn(
+                        List.of(
+                                new Hostel(1, "Elegance Hotel", new Address("25 RUE DU LOUVRE", "PARIS", "75001"), 10, 150, List.of("Free Wi-Fi", "Parking", "Complimentary Breakfast")),
+                                new Hostel(2, "Charming Inn", new Address("21 RUE DU BOULOI", "PARIS", "75001"), 5, 120, List.of("Free Wi-Fi", "Swimming Pool", "Room Service"))
+                        )
+                );
+
+        mvc.perform(get("/search?z=75001&d=2024-01-01&d=2024-01-02"))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+
+    }
+
 }
