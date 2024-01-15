@@ -17,6 +17,10 @@ public class SearchController {
     @GetMapping("/search")
     public ResponseEntity<SearchResponse> search(@RequestParam(name = "z") String zipcode,
                                                  @RequestParam(name = "d") String[] dates) {
+        if (dates.length!= 2) {
+            return ResponseEntity.badRequest().build();
+        }
+
         log.info("Searching for hostels in {} between {} and {}", zipcode, dates[0], dates[1]);
         return ResponseEntity.ok(
                 new SearchResponse(

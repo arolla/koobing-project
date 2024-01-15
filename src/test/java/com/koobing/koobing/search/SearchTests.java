@@ -58,4 +58,21 @@ public class SearchTests {
                 .andExpect(status().isBadRequest());
 
     }
+
+
+    @Test
+    @DisplayName("Search hostel in Paris without date")
+    void searchInParisWithoutDate() throws Exception {
+        mvc.perform(get("/search?z=75001"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Search hostel in Paris with one date missing")
+    void searchInParisWithOneMissingDate() throws Exception {
+        mvc.perform(get("/search?z=75001&d=2024-01-01"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
 }
