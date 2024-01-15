@@ -1,5 +1,7 @@
 package com.koobing.koobing.search;
 
+import com.koobing.koobing.search.dto.HostelDto;
+import com.koobing.koobing.search.dto.SearchResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,8 +21,8 @@ public class SearchController {
         return ResponseEntity.ok(
                 new SearchResponse(
                         List.of(
-                                new Hostel(1, "Elegance Hotel", "25 RUE DU LOUVRE, 75001, PARIS", 10, 150, List.of("Free Wi-Fi", "Parking", "Complimentary Breakfast")),
-                                new Hostel(2, "Charming Inn", "21 RUE DU BOULOI, 75001, PARIS", 5, 120, List.of("Free Wi-Fi", "Swimming Pool", "Room Service"))
+                                new HostelDto(1, "Elegance Hotel", "25 RUE DU LOUVRE, 75001, PARIS", 10, 150, List.of("Free Wi-Fi", "Parking", "Complimentary Breakfast")),
+                                new HostelDto(2, "Charming Inn", "21 RUE DU BOULOI, 75001, PARIS", 5, 120, List.of("Free Wi-Fi", "Swimming Pool", "Room Service"))
                         )
                 )
         );

@@ -1,10 +1,10 @@
-package com.koobing.koobing.search;
+package com.koobing.koobing.search.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
-public record Hostel(
+public record HostelDto(
         int id,
         String name,
         String address,
