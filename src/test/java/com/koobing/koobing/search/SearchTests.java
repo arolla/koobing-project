@@ -4,15 +4,25 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import static org.mockito.BDDMockito.*;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.time.LocalDate;
+import java.util.Collections;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
+
 @WebMvcTest(SearchController.class)
 public class SearchTests {
+
+    @MockBean
+    private SearchService searchService;
 
     @Autowired
     private MockMvc mvc;
@@ -86,17 +96,18 @@ public class SearchTests {
     @Test
     @DisplayName("Search hostel in Paris but no hostel is available")
     void searchInParisButUnavailableHostel() throws Exception {
+        given(searchService.availableHostels(anyString(), any(LocalDate.class), any(LocalDate.class)))
+                .willReturn(Collections.emptyList());
+
         var expectedJson = """
                 {
-                  "search_criteria": {
                     "zipcode": "75001",
                     "arrival_date": "2024-01-01",
                     "departure_date": "2024-01-02"
-                  }
                 }
                 """;
 
-        mvc.perform(get("/search?z=75001&d=2024-01-01"))
+        mvc.perform(get("/search?z=75001&d=2024-01-01&d=2024-01-02"))
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(content().json(expectedJson));
