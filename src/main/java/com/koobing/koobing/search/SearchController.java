@@ -18,7 +18,10 @@ public class SearchController {
         log.info("Searching for hostels in {} between {} and {}", zipcode, dates[0], dates[1]);
         return ResponseEntity.ok(
                 new SearchResponse(
-                        List.of()
+                        List.of(
+                                new Hostel(1, "Elegance Hotel", "25 RUE DU LOUVRE, 75001, PARIS", 10, 150, List.of("Free Wi-Fi", "Parking", "Complimentary Breakfast")),
+                                new Hostel(2, "Charming Inn", "21 RUE DU BOULOI, 75001, PARIS", 5, 120, List.of("Free Wi-Fi", "Swimming Pool", "Room Service"))
+                        )
                 )
         );
     }
