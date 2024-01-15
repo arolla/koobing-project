@@ -71,8 +71,15 @@ public class SearchTests {
     @Test
     @DisplayName("Search hostel in Paris with one date missing")
     void searchInParisWithOneMissingDate() throws Exception {
+        var expectedJson = """
+                {
+                    "message": "Arrival and departure dates must be provided."
+                }
+                """;
+
         mvc.perform(get("/search?z=75001&d=2024-01-01"))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(content().json(expectedJson));
     }
 }
