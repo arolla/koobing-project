@@ -1,5 +1,6 @@
 package com.koobing.koobing.search;
 
+import com.koobing.koobing.security.SecurityConfiguration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@WebMvcTest(SearchController.class)
+@WebMvcTest({SearchController.class, SecurityConfiguration.class})
 public class SearchTests {
 
     @MockBean
