@@ -16,7 +16,7 @@ class SearchServiceTest {
     @Test
     @DisplayName("Search available hostels")
     void searchAvailableHostels() {
-        SearchService searchService = new DefaultSearchService();
+        SearchService searchService = new DefaultSearchService(new StubHostelRepository());
 
         List<Hostel> hostels = searchService.availableHostels("75001", LocalDate.parse("2024-01-01"), LocalDate.parse("2024-01-02"));
 
