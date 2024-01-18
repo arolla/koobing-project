@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class SearchServiceTest {
 
@@ -41,5 +42,14 @@ class SearchServiceTest {
         );
 
         assertEquals(expectedHostels, hostels);
+    }
+
+    @Test
+    @DisplayName("Search available hostels with no night")
+    void searchAvailableHostelsWithoutNight() {
+        SearchService searchService = new DefaultSearchService(new StubHostelRepository());
+
+        assertThrows(IllegalDateException.class, () -> searchService.availableHostels("75001", LocalDate.parse("2024-01-01"), LocalDate.parse("2024-01-01")), "No night in date range");
+
     }
 }
