@@ -2,7 +2,6 @@ package com.koobing.koobing.search;
 
 import com.koobing.koobing.search.dto.HostelDto;
 import com.koobing.koobing.search.dto.SearchResponse;
-import com.koobing.koobing.search.service.IllegalDateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +25,7 @@ public class SearchController {
     @GetMapping("/search")
     public ResponseEntity<SearchResponse> search(@RequestParam(name = "z") String zipcode,
                                                  @RequestParam(name = "d") String[] dates) {
-        if (dates.length!= 2) {
+        if (dates.length != 2) {
             return ResponseEntity.badRequest().body(new SearchResponse.Failure("Arrival and departure dates must be provided."));
         }
 
@@ -35,20 +34,16 @@ public class SearchController {
         var arrivalDate = LocalDate.parse(dates[0]);
         var departureDate = LocalDate.parse(dates[1]);
 
-        try {
-            List<Hostel> availableHostels = searchService.availableHostels(zipcode, arrivalDate, departureDate);
-            if (availableHostels.isEmpty()) {
-                return new ResponseEntity<>(new SearchResponse.NotFound(zipcode, dates[0], dates[1]), HttpStatus.NOT_FOUND);
-            }
-
-            return ResponseEntity.ok(
-                    new SearchResponse.Success(
-                            // transformation from domain to dto
-                            availableHostels.stream().map(HostelDto::from).toList()
-                    )
-            );
-        } catch (IllegalDateException e) {
-            return ResponseEntity.badRequest().body(new SearchResponse.Failure(e.getMessage()));
+        List<Hostel> availableHostels = searchService.availableHostels(zipcode, arrivalDate, departureDate);
+        if (availableHostels.isEmpty()) {
+            return new ResponseEntity<>(new SearchResponse.NotFound(zipcode, dates[0], dates[1]), HttpStatus.NOT_FOUND);
         }
+
+        return ResponseEntity.ok(
+                new SearchResponse.Success(
+                        // transformation from domain to dto
+                        availableHostels.stream().map(HostelDto::from).toList()
+                )
+        );
     }
 }
