@@ -15,6 +15,9 @@ public class DefaultSearchService implements SearchService {
 
     @Override
     public List<Hostel> availableHostels(String zipcode, LocalDate arrivalDate, LocalDate departureDate) {
+        if (arrivalDate.equals(departureDate)) {
+            throw new IllegalDateException("No night in date range");
+        }
         if (arrivalDate.isAfter(departureDate)) {
             return hostelRepository.availableHostels(zipcode, departureDate, arrivalDate);
         }
