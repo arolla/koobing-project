@@ -1,6 +1,6 @@
 package com.koobing.koobing.search;
 
-import io.jbock.util.Either;
+import com.koobing.koobing.Either;
 
 import java.time.LocalDate;
 import java.util.List;
