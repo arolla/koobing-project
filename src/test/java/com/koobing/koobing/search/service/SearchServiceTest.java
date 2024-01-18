@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -17,7 +18,7 @@ class SearchServiceTest {
     @Test
     @DisplayName("Search available hostels")
     void searchAvailableHostels() {
-        SearchService searchService = new DefaultSearchService(new StubHostelRepository());
+        SearchService searchService = new DefaultSearchService(new StubHostelRepository(false));
 
         Either<String, List<Hostel>> hostels = searchService.availableHostels("75001", LocalDate.parse("2024-01-01"), LocalDate.parse("2024-01-02"));
 
@@ -34,7 +35,7 @@ class SearchServiceTest {
     @Test
     @DisplayName("Search available hostels by inverting departure and arrival dates")
     void searchAvailableHostelsWithInvertedDates() {
-        SearchService searchService = new DefaultSearchService(new StubHostelRepository());
+        SearchService searchService = new DefaultSearchService(new StubHostelRepository(false));
 
         Either<String, List<Hostel>> hostels = searchService.availableHostels("75001", LocalDate.parse("2024-01-02"), LocalDate.parse("2024-01-01"));
 
@@ -51,11 +52,22 @@ class SearchServiceTest {
     @Test
     @DisplayName("Search available hostels with no night")
     void searchAvailableHostelsWithoutNight() {
-        SearchService searchService = new DefaultSearchService(new StubHostelRepository());
+        SearchService searchService = new DefaultSearchService(new StubHostelRepository(false));
         Either<String, List<Hostel>> error = searchService.availableHostels("75001", LocalDate.parse("2024-01-01"), LocalDate.parse("2024-01-01"));
 
         var expectedError = new Either.Left<>("No night in date range");
 
         assertEquals(expectedError, error);
+    }
+
+    @Test
+    @DisplayName("Search available hostels when repository is down")
+    void searchAvailableHostelsWithUnavailableRepository() {
+        SearchService searchService = new DefaultSearchService(new StubHostelRepository(true));
+        Either<String, List<Hostel>> hostels = searchService.availableHostels("75001", LocalDate.parse("2024-01-01"), LocalDate.parse("2024-01-02"));
+
+        var expectedHostels = new Either.Right<>(Collections.emptyList());
+
+        assertEquals(expectedHostels, hostels);
     }
 }

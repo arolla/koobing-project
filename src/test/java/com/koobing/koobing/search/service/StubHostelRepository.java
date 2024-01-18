@@ -8,8 +8,18 @@ import java.util.Collections;
 import java.util.List;
 
 public class StubHostelRepository implements HostelRepository {
+    private final boolean unavailable;
+
+    public StubHostelRepository(boolean unavailable) {
+        this.unavailable = unavailable;
+    }
+
     @Override
-    public List<Hostel> availableHostels(String zipcode, LocalDate arrivalDate, LocalDate departureDate) {
+    public List<Hostel> availableHostels(String zipcode, LocalDate arrivalDate, LocalDate departureDate) throws Exception {
+        if (unavailable) {
+            throw new Exception("Not available");
+        }
+
         if (zipcode.equals("75001") && arrivalDate.equals(LocalDate.parse("2024-01-01")) && departureDate.equals(LocalDate.parse("2024-01-02"))) {
             return List.of(
                     new Hostel(1, "Elegance Hotel", new Address("25 RUE DU LOUVRE", "PARIS", "75001"), 10, 150, List.of("Free Wi-Fi", "Parking", "Complimentary Break")),
