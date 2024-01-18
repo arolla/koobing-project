@@ -15,6 +15,9 @@ public class DefaultSearchService implements SearchService {
 
     @Override
     public List<Hostel> availableHostels(String zipcode, LocalDate arrivalDate, LocalDate departureDate) {
+        if (arrivalDate.isAfter(departureDate)) {
+            return hostelRepository.availableHostels(zipcode, departureDate, arrivalDate);
+        }
         return hostelRepository.availableHostels(zipcode, arrivalDate, departureDate);
     }
 }
