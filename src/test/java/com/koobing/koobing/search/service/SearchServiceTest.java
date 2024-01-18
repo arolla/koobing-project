@@ -3,6 +3,7 @@ package com.koobing.koobing.search.service;
 import com.koobing.koobing.search.Address;
 import com.koobing.koobing.search.Hostel;
 import com.koobing.koobing.search.SearchService;
+import io.jbock.util.Either;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SearchServiceTest {
 
@@ -19,14 +20,15 @@ class SearchServiceTest {
     void searchAvailableHostels() {
         SearchService searchService = new DefaultSearchService(new StubHostelRepository());
 
-        List<Hostel> hostels = searchService.availableHostels("75001", LocalDate.parse("2024-01-01"), LocalDate.parse("2024-01-02"));
+        Either<String, List<Hostel>> hostels = searchService.availableHostels("75001", LocalDate.parse("2024-01-01"), LocalDate.parse("2024-01-02"));
 
         var expectedHostels = List.of(
                 new Hostel(1, "Elegance Hotel", new Address("25 RUE DU LOUVRE", "PARIS", "75001"), 10, 150, List.of("Free Wi-Fi", "Parking", "Complimentary Break")),
                 new Hostel(2, "Charming Inn", new Address("21 RUE DU BOULOI", "PARIS", "75001"), 5, 120, List.of("Free Wi-Fi", "Swimming Pool", "Room Service"))
         );
 
-        assertEquals(expectedHostels, hostels);
+        assertTrue(hostels.isRight());
+        assertEquals(expectedHostels, hostels.getRight().get());
     }
 
     @Test
@@ -34,22 +36,24 @@ class SearchServiceTest {
     void searchAvailableHostelsWithInvertedDates() {
         SearchService searchService = new DefaultSearchService(new StubHostelRepository());
 
-        List<Hostel> hostels = searchService.availableHostels("75001", LocalDate.parse("2024-01-02"), LocalDate.parse("2024-01-01"));
+        Either<String, List<Hostel>> hostels = searchService.availableHostels("75001", LocalDate.parse("2024-01-02"), LocalDate.parse("2024-01-01"));
 
         var expectedHostels = List.of(
                 new Hostel(1, "Elegance Hotel", new Address("25 RUE DU LOUVRE", "PARIS", "75001"), 10, 150, List.of("Free Wi-Fi", "Parking", "Complimentary Break")),
                 new Hostel(2, "Charming Inn", new Address("21 RUE DU BOULOI", "PARIS", "75001"), 5, 120, List.of("Free Wi-Fi", "Swimming Pool", "Room Service"))
         );
 
-        assertEquals(expectedHostels, hostels);
+        assertTrue(hostels.isRight());
+        assertEquals(expectedHostels, hostels.getRight().get());
     }
 
     @Test
     @DisplayName("Search available hostels with no night")
     void searchAvailableHostelsWithoutNight() {
         SearchService searchService = new DefaultSearchService(new StubHostelRepository());
-
-        assertThrows(IllegalDateException.class, () -> searchService.availableHostels("75001", LocalDate.parse("2024-01-01"), LocalDate.parse("2024-01-01")), "No night in date range");
+        Either<String, List<Hostel>> hostels = searchService.availableHostels("75001", LocalDate.parse("2024-01-01"), LocalDate.parse("2024-01-01"));
+        assertTrue(hostels.isLeft());
+        assertEquals("No night in date range", hostels.getLeft().get());
 
     }
 }

@@ -2,6 +2,7 @@ package com.koobing.koobing.search;
 
 import com.koobing.koobing.search.dto.HostelDto;
 import com.koobing.koobing.search.dto.SearchResponse;
+import io.jbock.util.Either;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,15 +35,18 @@ public class SearchController {
         var arrivalDate = LocalDate.parse(dates[0]);
         var departureDate = LocalDate.parse(dates[1]);
 
-        List<Hostel> availableHostels = searchService.availableHostels(zipcode, arrivalDate, departureDate);
-        if (availableHostels.isEmpty()) {
+        Either<String, List<Hostel>> availableHostels = searchService.availableHostels(zipcode, arrivalDate, departureDate);
+        if (availableHostels.isLeft()) {
+            return new ResponseEntity<>(new SearchResponse.Failure(availableHostels.getLeft().get()), HttpStatus.BAD_REQUEST);
+        }
+        if (availableHostels.getRight().get().isEmpty()) {
             return new ResponseEntity<>(new SearchResponse.NotFound(zipcode, dates[0], dates[1]), HttpStatus.NOT_FOUND);
         }
 
         return ResponseEntity.ok(
                 new SearchResponse.Success(
                         // transformation from domain to dto
-                        availableHostels.stream().map(HostelDto::from).toList()
+                        availableHostels.getRight().get().stream().map(HostelDto::from).toList()
                 )
         );
     }
