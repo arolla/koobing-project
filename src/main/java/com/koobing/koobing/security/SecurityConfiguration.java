@@ -18,6 +18,7 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/bookings/**").hasRole("PROCUREMENT")
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());

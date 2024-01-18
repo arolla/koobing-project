@@ -20,7 +20,7 @@ public class BookingTests {
     private MockMvc mvc;
 
     @Test
-    @WithMockUser
+    @WithMockUser(roles = "PROCUREMENT")
     @DisplayName("Book a room")
     void bookRoom() throws Exception {
         var bookingJson = """
@@ -39,7 +39,6 @@ public class BookingTests {
                 }
                 """;
 
-
         mvc.perform(post("/bookings")
                         .contentType("application/json")
                         .content(bookingJson))
@@ -47,5 +46,32 @@ public class BookingTests {
                 .andExpect(status().isOk())
                 .andExpect(content().json(expectedJson));
 
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("A simple user try to book a room")
+    void bookRoomBySimpleUser() throws Exception {
+        var bookingJson = """
+                {
+                    "hostel_id": 123,
+                    "room_id": 324,
+                    "arrival": "2020-01-01",
+                    "departure": "2020-01-02",
+                    "email" : "foo.bar@example.com"
+                }
+                """;
+
+        var expectedJson = """
+                {
+                    "booking_number": "A123"
+                }
+                """;
+
+        mvc.perform(post("/bookings")
+                        .contentType("application/json")
+                        .content(bookingJson))
+                .andDo(print())
+                .andExpect(status().isForbidden());
     }
 }
