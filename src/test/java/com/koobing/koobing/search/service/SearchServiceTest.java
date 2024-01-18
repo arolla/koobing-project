@@ -27,4 +27,19 @@ class SearchServiceTest {
 
         assertEquals(expectedHostels, hostels);
     }
+
+    @Test
+    @DisplayName("Search available hostels by inverting departure and arrival dates")
+    void searchAvailableHostelsWithInvertedDates() {
+        SearchService searchService = new DefaultSearchService(new StubHostelRepository());
+
+        List<Hostel> hostels = searchService.availableHostels("75001", LocalDate.parse("2024-01-02"), LocalDate.parse("2024-01-01"));
+
+        var expectedHostels = List.of(
+                new Hostel(1, "Elegance Hotel", new Address("25 RUE DU LOUVRE", "PARIS", "75001"), 10, 150, List.of("Free Wi-Fi", "Parking", "Complimentary Break")),
+                new Hostel(2, "Charming Inn", new Address("21 RUE DU BOULOI", "PARIS", "75001"), 5, 120, List.of("Free Wi-Fi", "Swimming Pool", "Room Service"))
+        );
+
+        assertEquals(expectedHostels, hostels);
+    }
 }
