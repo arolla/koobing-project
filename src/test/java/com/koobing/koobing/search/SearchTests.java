@@ -1,5 +1,6 @@
 package com.koobing.koobing.search;
 
+import com.koobing.koobing.search.service.IllegalDateException;
 import com.koobing.koobing.security.SecurityConfiguration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -146,5 +147,18 @@ public class SearchTests {
                 .andExpect(status().isUnauthorized());
 
     }
+
+    @Test
+    @WithMockUser
+    @DisplayName("Search hostel in Paris with no night")
+    void searchInParisWithoutNight() throws Exception {
+        given(searchService.availableHostels(anyString(), any(LocalDate.class), any(LocalDate.class)))
+                .willThrow(new IllegalDateException("No night in date range"));
+
+        mvc.perform(get("/search?z=75001&d=2024-01-01&d=2024-01-02"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
 
 }
