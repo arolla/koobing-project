@@ -8,11 +8,13 @@ import com.koobing.koobing.search.repository.ResilientSearchRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTimeout;
 
 class SearchServiceTest {
 
@@ -71,5 +73,18 @@ class SearchServiceTest {
         var expectedHostels = new Either.Right<>(Collections.emptyList());
 
         assertEquals(expectedHostels, hostels);
+    }
+
+    @Test
+    @DisplayName("Search available hostels when repository is slow")
+    void searchAvailableHostelsWithSlowRepository() {
+        assertTimeout(Duration.ofMillis(100), () -> {
+            var searchRepository = new ResilientSearchRepository(new StubHostelRepository(false, Duration.ofMillis(150)));
+            SearchService searchService = new DefaultSearchService(searchRepository);
+            Either<String, List<Hostel>> hostels = searchService.availableHostels("75001", LocalDate.parse("2024-01-01"), LocalDate.parse("2024-01-02"));
+
+            var expectedHostels = new Either.Right<>(Collections.emptyList());
+            assertEquals(expectedHostels, hostels);
+        });
     }
 }
