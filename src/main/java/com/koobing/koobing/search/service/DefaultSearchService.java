@@ -32,7 +32,7 @@ public class DefaultSearchService implements SearchService {
             }
 
             return new Either.Right<>(hostels);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             log.error("repository is down");
             return new Either.Right<>(Collections.emptyList());
         }

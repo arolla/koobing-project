@@ -4,6 +4,7 @@ import com.koobing.koobing.Either;
 import com.koobing.koobing.search.Address;
 import com.koobing.koobing.search.Hostel;
 import com.koobing.koobing.search.SearchService;
+import com.koobing.koobing.search.repository.ResilientSearchRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -63,7 +64,8 @@ class SearchServiceTest {
     @Test
     @DisplayName("Search available hostels when repository is down")
     void searchAvailableHostelsWithUnavailableRepository() {
-        SearchService searchService = new DefaultSearchService(new StubHostelRepository(true));
+        var searchRepository = new ResilientSearchRepository(new StubHostelRepository(true));
+        SearchService searchService = new DefaultSearchService(searchRepository);
         Either<String, List<Hostel>> hostels = searchService.availableHostels("75001", LocalDate.parse("2024-01-01"), LocalDate.parse("2024-01-02"));
 
         var expectedHostels = new Either.Right<>(Collections.emptyList());
