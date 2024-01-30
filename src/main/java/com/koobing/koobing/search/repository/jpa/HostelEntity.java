@@ -25,7 +25,7 @@ public class HostelEntity {
     private String city;
     private Float rating;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "hostel_id")
     private Collection<RoomEntity> rooms = new ArrayList<>();
 

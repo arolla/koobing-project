@@ -16,7 +16,7 @@ public class RoomEntity {
     @Column(name = "room_id")
     private UUID id;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "room_id")
     private Collection<BookingEntity> bookings = new ArrayList<>();
 
