@@ -4,6 +4,7 @@ import com.koobing.koobing.Either;
 import com.koobing.koobing.search.dto.HostelDto;
 import com.koobing.koobing.search.dto.SearchResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,7 @@ public class SearchController {
     }
 
     @GetMapping("/search")
+    @RegisterReflectionForBinding({SearchResponse.Success.class, SearchResponse.Failure.class})
     public ResponseEntity<SearchResponse> search(@RequestParam(name = "z") String zipcode,
                                                  @RequestParam(name = "d") String[] dates) {
         if (dates.length != 2) {
