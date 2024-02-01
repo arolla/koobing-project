@@ -15,7 +15,8 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.any;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -35,7 +36,7 @@ public class SearchTests {
     @WithMockUser
     @DisplayName("Search hostel in Paris")
     void searchInParis() throws Exception {
-        given(searchService.availableHostels(anyString(), any(LocalDate.class), any(LocalDate.class)))
+        given(searchService.availableHostels(any(Zipcode.class), any(LocalDate.class), any(LocalDate.class)))
                 .willReturn(new Either.Right<>(
                                 List.of(
                                         new Hostel(1, "Elegance Hotel", new Address("25 RUE DU LOUVRE", "PARIS", "75001"), 10, 150, List.of("Free Wi-Fi", "Parking", "Complimentary Breakfast")),
@@ -114,7 +115,7 @@ public class SearchTests {
     @WithMockUser
     @DisplayName("Search hostel in Paris but no hostel is available")
     void searchInParisButUnavailableHostel() throws Exception {
-        given(searchService.availableHostels(anyString(), any(LocalDate.class), any(LocalDate.class)))
+        given(searchService.availableHostels(any(Zipcode.class), any(LocalDate.class), any(LocalDate.class)))
                 .willReturn(new Either.Right<>(Collections.emptyList()));
 
         var expectedJson = """
@@ -135,7 +136,7 @@ public class SearchTests {
     @WithAnonymousUser
     @DisplayName("Search hostel in Paris without use has been authenticated")
     void noAuthenticatedUser() throws Exception {
-        given(searchService.availableHostels(anyString(), any(LocalDate.class), any(LocalDate.class)))
+        given(searchService.availableHostels(any(Zipcode.class), any(LocalDate.class), any(LocalDate.class)))
                 .willReturn(new Either.Right<>(
                                 List.of(
                                         new Hostel(1, "Elegance Hotel", new Address("25 RUE DU LOUVRE", "PARIS", "75001"), 10, 150, List.of("Free Wi-Fi", "Parking", "Complimentary Breakfast")),
@@ -154,7 +155,7 @@ public class SearchTests {
     @WithMockUser
     @DisplayName("Search hostel in Paris with no night")
     void searchInParisWithoutNight() throws Exception {
-        given(searchService.availableHostels(anyString(), any(LocalDate.class), any(LocalDate.class)))
+        given(searchService.availableHostels(any(Zipcode.class), any(LocalDate.class), any(LocalDate.class)))
                 .willReturn(new Either.Left<>("No night in date range"));
 
         mvc.perform(get("/search?z=75001&d=2024-01-01&d=2024-01-02"))

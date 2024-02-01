@@ -2,6 +2,7 @@ package com.koobing.koobing.search.repository;
 
 import com.koobing.koobing.search.Hostel;
 import com.koobing.koobing.search.SearchConfiguration;
+import com.koobing.koobing.search.Zipcode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ class SqlSearchRepositoryTest {
     @Test
     @DisplayName("search available hostels from DB")
     void availableHostels() throws Throwable {
-        List<Hostel> hostels = repository.availableHostels("49000", LocalDate.of(2024, 2, 5), LocalDate.of(2024, 2, 6));
+        List<Hostel> hostels = repository.availableHostels(new Zipcode("49000"), LocalDate.of(2024, 2, 5), LocalDate.of(2024, 2, 6));
         assertEquals(1, hostels.size());
         // getFirst() since Java 21
         assertEquals("Charmant Château", hostels.getFirst().name());

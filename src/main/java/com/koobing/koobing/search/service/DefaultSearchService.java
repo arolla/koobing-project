@@ -3,6 +3,7 @@ package com.koobing.koobing.search.service;
 import com.koobing.koobing.Either;
 import com.koobing.koobing.search.Hostel;
 import com.koobing.koobing.search.SearchService;
+import com.koobing.koobing.search.Zipcode;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
@@ -18,7 +19,7 @@ public class DefaultSearchService implements SearchService {
     }
 
     @Override
-    public Either<String, List<Hostel>> availableHostels(String zipcode, LocalDate arrivalDate, LocalDate departureDate) {
+    public Either<String, List<Hostel>> availableHostels(Zipcode zipcode, LocalDate arrivalDate, LocalDate departureDate) {
         if (arrivalDate.equals(departureDate)) {
             return new Either.Left<>("No night in date range");
         }

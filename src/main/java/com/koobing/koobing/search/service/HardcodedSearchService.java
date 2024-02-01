@@ -4,6 +4,7 @@ import com.koobing.koobing.Either;
 import com.koobing.koobing.search.Address;
 import com.koobing.koobing.search.Hostel;
 import com.koobing.koobing.search.SearchService;
+import com.koobing.koobing.search.Zipcode;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,7 @@ import java.util.List;
 @Service
 public class HardcodedSearchService implements SearchService {
     @Override
-    public Either<String, List<Hostel>> availableHostels(String zipcode, LocalDate arrivalDate, LocalDate departureDate) {
+    public Either<String, List<Hostel>> availableHostels(Zipcode zipcode, LocalDate arrivalDate, LocalDate departureDate) {
         return new Either.Right<>(
                 List.of(
                         new Hostel(1, "Elegance Hotel", new Address("25 RUE DU LOUVRE", "PARIS", "75001"), 10, 150, List.of("Free Wi-Fi", "Parking", "Complimentary Breakfast")),

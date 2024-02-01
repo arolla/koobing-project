@@ -1,6 +1,7 @@
 package com.koobing.koobing.search.repository;
 
 import com.koobing.koobing.search.Hostel;
+import com.koobing.koobing.search.Zipcode;
 import com.koobing.koobing.search.service.HostelRepository;
 
 import java.time.LocalDate;
@@ -19,7 +20,7 @@ public class ResilientSearchRepository implements HostelRepository {
     }
 
     @Override
-    public List<Hostel> availableHostels(String zipcode, LocalDate arrivalDate, LocalDate departureDate) throws Throwable {
+    public List<Hostel> availableHostels(Zipcode zipcode, LocalDate arrivalDate, LocalDate departureDate) throws Throwable {
         // Functional style
         CompletableFuture<List<Hostel>> future = CompletableFuture.supplyAsync(() -> {
             try {

@@ -6,5 +6,5 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface SearchService {
-    Either<String, List<Hostel>> availableHostels(String zipcode, LocalDate arrivalDate, LocalDate departureDate);
+    Either<String, List<Hostel>> availableHostels(Zipcode zipcode, LocalDate arrivalDate, LocalDate departureDate);
 }

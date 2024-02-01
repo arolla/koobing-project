@@ -35,7 +35,7 @@ public class SearchController {
         var arrivalDate = LocalDate.parse(dates[0]);
         var departureDate = LocalDate.parse(dates[1]);
 
-        Either<String, List<Hostel>> availableHostels = searchService.availableHostels(zipcode, arrivalDate, departureDate);
+        Either<String, List<Hostel>> availableHostels = searchService.availableHostels(new Zipcode(zipcode), arrivalDate, departureDate);
         return switch (availableHostels) {
             case Either.Left<String, List<Hostel>> e ->
                     ResponseEntity.badRequest().body(new SearchResponse.Failure(e.error()));
