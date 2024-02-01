@@ -5,7 +5,6 @@ import com.koobing.koobing.search.dto.HostelDto;
 import com.koobing.koobing.search.dto.SearchResponse;
 import com.koobing.koobing.utils.Context;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +33,6 @@ public class SearchController {
     public ResponseEntity<SearchResponse> search(@RequestParam(name = "z") String zipcode,
                                                  @RequestParam(name = "d") String[] dates) {
 
-        MDC.put("correlationId", String.valueOf(Context.correlationId()));
         log.debug("New request");
 
         if (dates.length != 2) {
