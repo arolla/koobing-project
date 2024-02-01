@@ -5,7 +5,6 @@ import com.koobing.koobing.search.Address;
 import com.koobing.koobing.search.Hostel;
 import com.koobing.koobing.search.SearchService;
 import com.koobing.koobing.search.Zipcode;
-import com.koobing.koobing.utils.Context;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -24,7 +23,7 @@ public class HardcodedSearchService implements SearchService {
         }
 
         if (departureDate.isBefore(arrivalDate)) {
-            log.warn("[{}] Departure date is before arrival date", Context.correlationId());
+            log.warn("Departure date is before arrival date");
         }
 
         return new Either.Right<>(
