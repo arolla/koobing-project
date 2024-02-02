@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Sql(scripts = {"/sql/create-tables.sql", "/sql/insert.sql"})
 @Sql(scripts = {"/sql/drop-tables.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 @ActiveProfiles("jdbc")
-class SqlSearchRepositoryTest {
+class SqlSearchRepositoryTests {
 
     @Autowired
     private SqlSearchRepository repository;
