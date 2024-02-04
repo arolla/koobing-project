@@ -3,6 +3,12 @@ package com.koobing.koobing.search;
 import com.koobing.koobing.Either;
 import com.koobing.koobing.search.dto.HostelDto;
 import com.koobing.koobing.search.dto.SearchResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +29,20 @@ public class SearchController {
         this.searchService = searchService;
     }
 
+    @Operation(summary = "Search for hostels")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Hostel List",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = SearchResponse.Success.class))}),
+            @ApiResponse(responseCode = "400",
+                    description = "Something went wrong",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = SearchResponse.Failure.class))})
+    })
     @GetMapping("/search")
-    public ResponseEntity<SearchResponse> search(@RequestParam(name = "z") String zipcode,
-                                                 @RequestParam(name = "d") String[] dates) {
+    public ResponseEntity<SearchResponse> search(@RequestParam(name = "z") @Parameter(name = "zipcode") String zipcode,
+                                                 @RequestParam(name = "d") @Parameter(name = "date", description = "Give two values: one for arrival and another for departure") String[] dates) {
         if (dates.length != 2) {
             return ResponseEntity.badRequest().body(new SearchResponse.Failure("Arrival and departure dates must be provided."));
         }
